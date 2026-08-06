@@ -354,7 +354,7 @@ export default function Appointment() {
                 <p className="text-red-600 dark:text-red-300 text-sm mb-4">For medical emergencies, don't book an appointment. Call immediately:</p>
                 <a href="tel:+919876543210" className="flex items-center gap-2 bg-red-500 text-white font-bold px-4 py-3 rounded-xl hover:bg-red-600 transition-colors text-sm">
                   <FiPhone className="w-4 h-4" />
-                  +91 98765 43210
+                  +91 ******3210
                 </a>
               </motion.div>
 

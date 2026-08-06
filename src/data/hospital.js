@@ -49,7 +49,7 @@ export const hospitalInfo = {
   founded: 1994,
   address: '123 Healthcare Avenue, Medical District, New Delhi - 110001',
   phone: '+91 11 2345 6789',
-  emergency: '+91 98765 43210',
+  emergency: '+91 ******3210',
   email: 'info@medicare-hospital.com',
   website: 'www.medicare-hospital.com',
   workingHours: {

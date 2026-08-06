@@ -15,6 +15,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Dashboard from './pages/Dashboard';
 import NotFound from './pages/NotFound';
+import Kiosk from './pages/Kiosk';
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Route>
+          <Route path="/kiosk" element={<Kiosk />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

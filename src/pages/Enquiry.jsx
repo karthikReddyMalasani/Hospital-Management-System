@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiPhone, FiMessageSquare, FiBookOpen, FiCheck } from 'react-icons/fi';
 import { Modal, PageHero } from '../components/ui';
 import { useApp } from '../context/AppContext';
+import { useTranslation } from '../hooks/useTranslation';
 
 const subjects = [
   'General Enquiry',
@@ -31,6 +32,7 @@ function validate(form) {
 
 export default function Enquiry() {
   const { addEnquiry } = useApp();
+  const { t } = useTranslation();
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -72,9 +74,9 @@ export default function Enquiry() {
   return (
     <div>
       <PageHero
-        title="Send an Enquiry"
-        subtitle="Have a question or need assistance? Our team is here to help you. We respond within 24 hours."
-        breadcrumbs={[{ label: 'Enquiry' }]}
+        title={t('enquiry_title')}
+        subtitle={t('enquiry_subtitle')}
+        breadcrumbs={[{ label: t('nav_enquiry') }]}
         bgGradient="from-purple-700 to-primary-700"
       />
 
@@ -88,12 +90,12 @@ export default function Enquiry() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white dark:bg-gray-800 rounded-2xl shadow-card p-8"
               >
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Your Message</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('enquiry_message')}</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-5" id="enquiry-form" noValidate>
                   {/* Name + Phone */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <Field label="Full Name" name="name" error={errors.name}>
+                    <Field label={t('enquiry_name')} name="name" error={errors.name}>
                       <div className="relative">
                         <FiUser className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
@@ -108,7 +110,7 @@ export default function Enquiry() {
                       </div>
                     </Field>
 
-                    <Field label="Phone Number" name="phone" error={errors.phone}>
+                    <Field label={t('enquiry_phone')} name="phone" error={errors.phone}>
                       <div className="relative">
                         <FiPhone className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <input
@@ -125,7 +127,7 @@ export default function Enquiry() {
                   </div>
 
                   {/* Email */}
-                  <Field label="Email Address" name="email" error={errors.email}>
+                  <Field label={t('enquiry_email')} name="email" error={errors.email}>
                     <div className="relative">
                       <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                       <input
@@ -141,7 +143,7 @@ export default function Enquiry() {
                   </Field>
 
                   {/* Subject */}
-                  <Field label="Subject" name="subject" error={errors.subject}>
+                  <Field label={t('enquiry_subject')} name="subject" error={errors.subject}>
                     <div className="relative">
                       <FiBookOpen className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                       <select
@@ -158,7 +160,7 @@ export default function Enquiry() {
                   </Field>
 
                   {/* Message */}
-                  <Field label="Message" name="message" error={errors.message}>
+                  <Field label={t('enquiry_message')} name="message" error={errors.message}>
                     <div className="relative">
                       <FiMessageSquare className="absolute left-3.5 top-3.5 text-gray-400 w-4 h-4" />
                       <textarea
@@ -180,9 +182,9 @@ export default function Enquiry() {
                     className="btn-primary w-full justify-center py-4 text-base"
                   >
                     {loading ? (
-                      <><span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> Sending...</>
+                      <><span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> {t('loading')}</>
                     ) : (
-                      <><FiMessageSquare className="w-5 h-5" /> Send Enquiry</>
+                      <><FiMessageSquare className="w-5 h-5" /> {t('send_enquiry')}</>
                     )}
                   </button>
                 </form>
@@ -256,13 +258,13 @@ export default function Enquiry() {
           >
             <FiCheck className="w-10 h-10 text-accent-600" />
           </motion.div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Enquiry Submitted!</h3>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('enquiry_success_title')}</h3>
           <p className="text-gray-500 dark:text-gray-400 text-sm mb-4">
-            Thank you for reaching out! Our team will contact you within 24 hours.
+            {t('enquiry_success_msg')}
           </p>
           <p className="text-xs text-gray-400 mb-6">Reference ID: <strong className="text-primary-600">{enquiryId}</strong></p>
           <button onClick={() => setShowModal(false)} className="btn-primary w-full justify-center">
-            Done
+            {t('done')}
           </button>
         </div>
       </Modal>

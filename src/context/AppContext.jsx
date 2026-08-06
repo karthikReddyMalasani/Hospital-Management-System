@@ -8,6 +8,9 @@ export function AppProvider({ children }) {
   // Dark mode
   const [darkMode, setDarkMode] = useLocalStorage('hms-dark-mode', false);
 
+  // Language
+  const [language, setLanguage] = useLocalStorage('hms-language', 'en');
+
   // Appointments stored in LocalStorage
   const [appointments, setAppointments] = useLocalStorage('hms-appointments', []);
 
@@ -85,6 +88,8 @@ export function AppProvider({ children }) {
         darkMode,
         toggleDarkMode,
         initDarkMode,
+        language,
+        setLanguage,
         appointments,
         addAppointment,
         deleteAppointment,

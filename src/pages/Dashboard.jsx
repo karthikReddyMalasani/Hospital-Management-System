@@ -4,9 +4,10 @@
 // ============================================================
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FiTrash2, FiCalendar, FiMessageSquare, FiUsers, FiGrid, FiEye } from 'react-icons/fi';
+import { FiTrash2, FiCalendar, FiMessageSquare, FiUsers, FiGrid } from 'react-icons/fi';
 import { Modal, PageHero } from '../components/ui';
 import { useApp } from '../context/AppContext';
+import { useTranslation } from '../hooks/useTranslation';
 import { doctors } from '../data/doctors';
 import { departments } from '../data/departments';
 
@@ -51,17 +52,25 @@ function StatusBadge({ status }) {
   );
 }
 
+function maskPhone(phone) {
+  if (!phone) return null;
+  const str = String(phone);
+  if (str.length <= 4) return str;
+  return '*'.repeat(str.length - 4) + str.slice(-4);
+}
+
 export default function Dashboard() {
   const { appointments, deleteAppointment, enquiries, deleteEnquiry, showToast } = useApp();
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('appointments');
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteType, setDeleteType] = useState('');
 
   const stats = [
-    { title: 'Total Appointments', value: appointments.length, icon: FiCalendar, color: 'blue' },
-    { title: 'Total Enquiries', value: enquiries.length, icon: FiMessageSquare, color: 'teal' },
-    { title: 'Total Doctors', value: doctors.length, icon: FiUsers, color: 'green' },
-    { title: 'Total Departments', value: departments.length, icon: FiGrid, color: 'purple' },
+    { title: t('dash_total_appointments'), value: appointments.length, icon: FiCalendar, color: 'blue' },
+    { title: t('dash_total_enquiries'),    value: enquiries.length,    icon: FiMessageSquare, color: 'teal' },
+    { title: t('dash_total_doctors'),      value: doctors.length,      icon: FiUsers, color: 'green' },
+    { title: t('dash_total_departments'),  value: departments.length,  icon: FiGrid, color: 'purple' },
   ];
 
   const confirmDelete = (id, type) => {
@@ -90,9 +99,9 @@ export default function Dashboard() {
   return (
     <div>
       <PageHero
-        title="Dashboard"
-        subtitle="Overview of all hospital appointments, enquiries, doctors, and departments."
-        breadcrumbs={[{ label: 'Dashboard' }]}
+        title={t('dash_title')}
+        subtitle={t('dash_subtitle')}
+        breadcrumbs={[{ label: t('dash_title') }]}
         bgGradient="from-gray-800 to-gray-900"
       />
 
@@ -108,8 +117,8 @@ export default function Dashboard() {
           {/* Tabs */}
           <div className="flex gap-2 mb-6 flex-wrap">
             {[
-              { key: 'appointments', label: 'Appointments', count: appointments.length },
-              { key: 'enquiries', label: 'Enquiries', count: enquiries.length },
+              { key: 'appointments', label: t('dash_tab_appointments'), count: appointments.length },
+              { key: 'enquiries',    label: t('dash_tab_enquiries'),    count: enquiries.length },
             ].map(tab => (
               <button
                 key={tab.key}
@@ -138,21 +147,21 @@ export default function Dashboard() {
               {appointments.length === 0 ? (
                 <div className="text-center py-16">
                   <p className="text-5xl mb-4">📅</p>
-                  <p className="text-gray-500 dark:text-gray-400 font-medium">No appointments yet</p>
-                  <p className="text-gray-400 text-sm">Book an appointment to see it here</p>
+                  <p className="text-gray-500 dark:text-gray-400 font-medium">{t('dash_no_appointments')}</p>
+                  <p className="text-gray-400 text-sm">{t('dash_no_appointments_sub')}</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">ID</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">Patient</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden md:table-cell">Doctor</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden lg:table-cell">Department</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden lg:table-cell">Date</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">Status</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">{t('dash_col_id')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">{t('dash_col_patient')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden md:table-cell">{t('dash_col_doctor')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden lg:table-cell">{t('dash_col_department')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden lg:table-cell">{t('dash_col_date')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">{t('dash_col_status')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">{t('dash_col_actions')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -164,7 +173,7 @@ export default function Dashboard() {
                           <td className="px-5 py-4 font-mono text-xs text-primary-600 dark:text-primary-400 font-medium">{apt.id}</td>
                           <td className="px-5 py-4">
                             <div className="font-semibold text-gray-900 dark:text-white">{apt.patientName}</div>
-                            <div className="text-gray-400 text-xs">{apt.phone}</div>
+                            <div className="text-gray-400 text-xs">{maskPhone(apt.phone)}</div>
                           </td>
                           <td className="px-5 py-4 text-gray-600 dark:text-gray-300 hidden md:table-cell">{apt.doctor}</td>
                           <td className="px-5 py-4 text-gray-600 dark:text-gray-300 hidden lg:table-cell">{apt.department}</td>
@@ -200,21 +209,21 @@ export default function Dashboard() {
               {enquiries.length === 0 ? (
                 <div className="text-center py-16">
                   <p className="text-5xl mb-4">✉️</p>
-                  <p className="text-gray-500 dark:text-gray-400 font-medium">No enquiries yet</p>
-                  <p className="text-gray-400 text-sm">Submit an enquiry to see it here</p>
+                  <p className="text-gray-500 dark:text-gray-400 font-medium">{t('dash_no_enquiries')}</p>
+                  <p className="text-gray-400 text-sm">{t('dash_no_enquiries_sub')}</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">ID</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">Name</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden md:table-cell">Subject</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden lg:table-cell">Email</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden lg:table-cell">Date</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">Status</th>
-                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">Actions</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">{t('dash_col_id')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">{t('dash_col_patient')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden md:table-cell">{t('dash_col_source')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden lg:table-cell">{t('dash_col_subject')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200 hidden lg:table-cell">{t('dash_col_date')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">{t('dash_col_status')}</th>
+                        <th className="text-left px-5 py-4 font-semibold text-gray-700 dark:text-gray-200">{t('dash_col_actions')}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -225,11 +234,18 @@ export default function Dashboard() {
                         >
                           <td className="px-5 py-4 font-mono text-xs text-secondary-600 dark:text-secondary-400 font-medium">{enq.id}</td>
                           <td className="px-5 py-4">
-                            <div className="font-semibold text-gray-900 dark:text-white">{enq.name}</div>
-                            <div className="text-gray-400 text-xs">{enq.phone}</div>
+                            <div className="font-semibold text-gray-900 dark:text-white">{enq.name || t('dash_anonymous')}</div>
+                            <div className="text-gray-400 text-xs">{maskPhone(enq.phone) || enq.email || t('dash_no_contact')}</div>
                           </td>
-                          <td className="px-5 py-4 text-gray-600 dark:text-gray-300 hidden md:table-cell">{enq.subject}</td>
-                          <td className="px-5 py-4 text-gray-600 dark:text-gray-300 hidden lg:table-cell">{enq.email}</td>
+                          <td className="px-5 py-4 hidden md:table-cell">
+                            <div className="flex gap-2">
+                              <span className={`px-2 py-1 rounded text-xs font-medium ${enq.channel === 'WhatsApp' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : enq.channel === 'Kiosk' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300' : enq.channel === 'IVR' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}>
+                                {enq.channel || 'Web'}
+                              </span>
+                              <span className="px-2 py-1 bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 rounded text-xs font-medium uppercase">{enq.language || 'EN'}</span>
+                            </div>
+                          </td>
+                          <td className="px-5 py-4 text-gray-600 dark:text-gray-300 hidden lg:table-cell">{enq.subject}</td>
                           <td className="px-5 py-4 text-gray-600 dark:text-gray-300 hidden lg:table-cell">{formatDate(enq.createdAt)}</td>
                           <td className="px-5 py-4"><StatusBadge status={enq.status} /></td>
                           <td className="px-5 py-4">
@@ -258,22 +274,22 @@ export default function Dashboard() {
           <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
             <FiTrash2 className="w-8 h-8 text-red-600" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Delete Record</h3>
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{t('dash_delete_title')}</h3>
           <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">
-            Are you sure you want to delete this {deleteType}? This action cannot be undone.
+            {t('dash_delete_msg')}
           </p>
           <div className="flex gap-3">
             <button
               onClick={() => setDeleteTarget(null)}
               className="flex-1 px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-600 dark:text-gray-300 font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm"
             >
-              Cancel
+              {t('cancel')}
             </button>
             <button
               onClick={handleDelete}
               className="flex-1 px-4 py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-semibold transition-colors text-sm"
             >
-              Delete
+              {t('dash_delete_btn')}
             </button>
           </div>
         </div>

@@ -19,7 +19,7 @@ const contactInfo = [
   {
     icon: FiPhone,
     title: 'Call Us',
-    lines: ['+91 11 2345 6789 (General)', '+91 98765 43210 (Emergency)'],
+    lines: ['+91 11 2345 6789 (General)', '+91 ******3210 (Emergency)'],
     color: 'text-primary-600',
     bg: 'bg-primary-50 dark:bg-primary-900/20',
   },

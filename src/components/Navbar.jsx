@@ -1,31 +1,47 @@
 // ============================================================
-// Navbar Component – Sticky navigation with dark mode toggle
+// Navbar Component – Sticky navigation with dark mode + language toggle
 // ============================================================
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FiMenu, FiX, FiPhone, FiSun, FiMoon, FiChevronDown
+  FiMenu, FiX, FiPhone, FiSun, FiMoon, FiGlobe
 } from 'react-icons/fi';
 import { FaHospital } from 'react-icons/fa';
 import { useApp } from '../context/AppContext';
+import { useTranslation } from '../hooks/useTranslation';
 
-const navLinks = [
-  { path: '/', label: 'Home' },
-  { path: '/departments', label: 'Departments' },
-  { path: '/doctors', label: 'Doctors' },
-  { path: '/appointment', label: 'Appointment' },
-  { path: '/enquiry', label: 'Enquiry' },
-  { path: '/about', label: 'About' },
-  { path: '/contact', label: 'Contact' },
-  { path: '/dashboard', label: 'Dashboard' },
+const allLangs = [
+  { code: 'en', label: 'English',   native: 'English' },
+  { code: 'hi', label: 'Hindi',     native: 'हिंदी' },
+  { code: 'te', label: 'Telugu',    native: 'తెలుగు' },
+  { code: 'ta', label: 'Tamil',     native: 'தமிழ்' },
+  { code: 'bn', label: 'Bengali',   native: 'বাংলা' },
+  { code: 'mr', label: 'Marathi',   native: 'मराठी' },
+  { code: 'gu', label: 'Gujarati',  native: 'ગુજરાતી' },
+  { code: 'kn', label: 'Kannada',   native: 'ಕನ್ನಡ' },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { darkMode, toggleDarkMode } = useApp();
+  const [langOpen, setLangOpen] = useState(false);
+  const { darkMode, toggleDarkMode, language, setLanguage } = useApp();
+  const { t } = useTranslation();
   const location = useLocation();
+
+  const navLinks = [
+    { path: '/',            key: 'nav_home' },
+    { path: '/departments', key: 'nav_departments' },
+    { path: '/doctors',     key: 'nav_doctors' },
+    { path: '/appointment', key: 'nav_appointment' },
+    { path: '/enquiry',     key: 'nav_enquiry' },
+    { path: '/about',       key: 'nav_about' },
+    { path: '/contact',     key: 'nav_contact' },
+    { path: '/dashboard',   key: 'nav_dashboard' },
+  ];
+
+  const currentLang = allLangs.find(l => l.code === language) || allLangs[0];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -35,7 +51,18 @@ export default function Navbar() {
 
   useEffect(() => {
     setIsOpen(false);
+    setLangOpen(false);
   }, [location]);
+
+  // Close lang dropdown when clicking outside
+  useEffect(() => {
+    if (!langOpen) return;
+    const handler = (e) => {
+      if (!e.target.closest('#lang-dropdown')) setLangOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [langOpen]);
 
   return (
     <>
@@ -44,7 +71,7 @@ export default function Navbar() {
         <div className="container-custom flex justify-between items-center">
           <span className="flex items-center gap-1">
             <FiPhone className="w-3 h-3" />
-            Emergency: +91 98765 43210
+            {t('nav_emergency')}: +91 ******3210
           </span>
           <span>Mon-Sat: 8AM - 8PM | Emergency 24/7</span>
         </div>
@@ -93,7 +120,7 @@ export default function Navbar() {
                     }`
                   }
                 >
-                  {link.label}
+                  {t(link.key)}
                 </NavLink>
               ))}
             </div>
@@ -109,13 +136,52 @@ export default function Navbar() {
                 {darkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
               </button>
 
+              {/* Language Switcher */}
+              <div id="lang-dropdown" className="relative hidden sm:block">
+                <button
+                  onClick={() => setLangOpen(!langOpen)}
+                  className="flex items-center gap-1 px-3 h-9 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 text-sm font-semibold"
+                  aria-label="Change language"
+                >
+                  <FiGlobe className="w-4 h-4" />
+                  <span className="uppercase">{language}</span>
+                </button>
+
+                <AnimatePresence>
+                  {langOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute right-0 mt-2 w-44 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden z-50"
+                    >
+                      {allLangs.map(lang => (
+                        <button
+                          key={lang.code}
+                          onClick={() => { setLanguage(lang.code); setLangOpen(false); }}
+                          className={`flex items-center justify-between w-full px-4 py-2.5 text-sm transition-colors ${
+                            language === lang.code
+                              ? 'text-primary-600 font-bold bg-primary-50 dark:text-primary-400 dark:bg-primary-900/30'
+                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                          }`}
+                        >
+                          <span>{lang.label}</span>
+                          <span className="text-gray-400 dark:text-gray-500 text-xs">{lang.native}</span>
+                        </button>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               {/* Emergency CTA */}
               <a
                 href="tel:+919876543210"
                 className="hidden md:flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-4 py-2 rounded-xl transition-all duration-200 hover:shadow-md"
               >
                 <FiPhone className="w-4 h-4" />
-                Emergency
+                {t('nav_emergency')}
               </a>
 
               {/* Book Appointment */}
@@ -123,7 +189,7 @@ export default function Navbar() {
                 to="/appointment"
                 className="hidden md:flex btn-primary text-sm py-2 px-4"
               >
-                Book Appointment
+                {t('nav_book')}
               </Link>
 
               {/* Mobile menu */}
@@ -162,22 +228,45 @@ export default function Navbar() {
                       }`
                     }
                   >
-                    {link.label}
+                    {t(link.key)}
                   </NavLink>
                 ))}
+
+                {/* Mobile Language Switcher */}
+                <div className="pt-2 border-t border-gray-100 dark:border-gray-800 mt-2">
+                  <p className="px-4 text-xs text-gray-400 mb-2 font-medium uppercase tracking-wider flex items-center gap-1">
+                    <FiGlobe className="w-3 h-3" /> Language
+                  </p>
+                  <div className="grid grid-cols-4 gap-2 px-2">
+                    {allLangs.map(lang => (
+                      <button
+                        key={lang.code}
+                        onClick={() => setLanguage(lang.code)}
+                        className={`py-2 rounded-xl text-xs font-bold transition-colors ${
+                          language === lang.code
+                            ? 'bg-primary-600 text-white'
+                            : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-gray-700'
+                        }`}
+                      >
+                        {lang.code.toUpperCase()}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="flex gap-2 mt-2">
                   <a
                     href="tel:+919876543210"
                     className="flex-1 flex items-center justify-center gap-2 bg-red-500 text-white text-sm font-semibold px-4 py-3 rounded-xl"
                   >
                     <FiPhone className="w-4 h-4" />
-                    Emergency
+                    {t('nav_emergency')}
                   </a>
                   <Link
                     to="/appointment"
                     className="flex-1 btn-primary text-sm py-3 justify-center"
                   >
-                    Book Now
+                    {t('book_now')}
                   </Link>
                 </div>
               </div>

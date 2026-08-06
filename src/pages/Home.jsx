@@ -511,7 +511,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3">
               <a href="tel:+919876543210" className="flex items-center gap-2 bg-white text-red-600 font-bold px-8 py-4 rounded-xl hover:bg-red-50 transition-colors">
                 <FiPhone className="w-5 h-5" />
-                +91 98765 43210
+                +91 ******3210
               </a>
               <Link to="/appointment" className="flex items-center gap-2 bg-red-700 hover:bg-red-800 text-white font-semibold px-8 py-4 rounded-xl transition-colors">
                 Book Appointment

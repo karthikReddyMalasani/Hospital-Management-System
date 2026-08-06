@@ -30,7 +30,7 @@ export const faqs = [
     id: 5,
     category: 'Emergency',
     question: 'What should I do in case of a medical emergency?',
-    answer: 'In case of a medical emergency, call our emergency hotline at +91 98765 43210 immediately. Our 24/7 emergency department is equipped to handle all types of medical emergencies. Do not drive yourself; call for an ambulance if needed.',
+    answer: 'In case of a medical emergency, call our emergency hotline at +91 ******3210 immediately. Our 24/7 emergency department is equipped to handle all types of medical emergencies. Do not drive yourself; call for an ambulance if needed.',
   },
   {
     id: 6,
